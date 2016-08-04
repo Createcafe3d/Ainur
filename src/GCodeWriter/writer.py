@@ -11,9 +11,22 @@ class GCodeWriter:
         self.num_input = input_seq
         self.prev_e_value = 0
         input_lines = input_seq.split("\n")
+        self.gcode_output = ""
+        self.initialize_gcode(nozzle_diameter=nozzle_diameter)
+        g1_lines = ""
         for line in input_lines:
             input_members = line.split(",")
-            print self.construct_g1_line_from_array(input_members, e_modifier)
+            g1_lines += self.construct_g1_line_from_array(input_members, e_modifier) + "\n"
+        self.gcode_output += ";Layer count: {}\n;LAYER:0\n".format(len(g1_lines.split('\n'))-1)
+        self.gcode_output += "G10\nG0\n;TYPE:\nG11\n" + g1_lines
+        print self.gcode_output
+
+    def initialize_gcode(self, nozzle_diameter):
+        self.gcode_output += ";FLAVOR:UltiGCode\n;TIME:4198\n;MATERIAL:10958\n;MATERIAL2:0\n"
+        self.gcode_output += ";NOZZLE_DIAMETER:{}".format(round(nozzle_diameter, 6))
+        self.gcode_output += "\n;NOZZLE_DIAMETER2:{}".format(round(nozzle_diameter, 6))
+        self.gcode_output += "\n\n"
+
 
     def construct_g1_line_from_array(self, input_array, e_modifier):
         gcode = "G1 "
