@@ -5,6 +5,9 @@ import math
 class GCodeWriter:
 
     def __init__(self, input_seq="", nozzle_diameter=0.4, e_modifier=12.0):
+        """
+        GCodeWriter constructor
+        """
         self.num_input = input_seq
         self.prev_e_value = 0
         input_lines = input_seq.split("\n")
@@ -17,7 +20,7 @@ class GCodeWriter:
         coords = ['X', 'Y', 'Z']
         for idx, entry in enumerate(input_array):
             gcode += coords[idx] + entry + " "
-        gcode += "E" # FIX E CALCULATIONi
+        gcode += "E"
         ans = (math.sqrt(math.pow(float(input_array[0]), 2) + math.pow(float(input_array[1]), 2)))
         ans = ans / e_modifier
         ans = round(ans, 5)
